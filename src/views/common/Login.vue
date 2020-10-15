@@ -70,15 +70,16 @@ export default {
       this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
           request({
-            url: 'login/userlogin',
+            url: 'login',
             method: 'post',
             data: JSON.stringify(this.loginForm)
           }).then(res => {
             const result = res.data
-            if (result.code !== 0) {
+            if (result.code !== 200) {
               return this.$message.error(result.msg)
             }
-            this.$message.success(result.msg)
+            console.log(res)
+            // this.$message.success(result.msg)
             // this.$message.success("登录成功");
             // 1.登录成功后将后台返回的token,保存到sessionStorage中
             //  1.1 项目中除了登录之外的api接口，其他接口都需要在登录后才能访问
