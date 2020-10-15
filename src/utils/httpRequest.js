@@ -1,8 +1,12 @@
 import axios from 'axios'
 
-export function request(config) { 
+export function request (config) {
   const http = axios.create({
-     timeout: 3000
+    timeout: 3000,
+    baseURL: 'http://127.0.0.1:8888',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    }
   })
 
   // 请求拦截

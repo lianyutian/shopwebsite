@@ -34,7 +34,7 @@
           </el-input>
         </el-form-item>
         <el-form-item class="btns">
-          <el-button type="primary" @click="loginForm">登录</el-button>
+          <el-button type="primary" @click="login">登录</el-button>
           <el-button type="info" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
@@ -43,42 +43,56 @@
 </template>
 
 <script>
-import { login } from "@/network/login"
+import { request } from '@/utils/httpRequest'
 
 export default {
-  data() {
+  data () {
     return {
       // 登录表单数据绑定对象
       loginForm: {
-        userName: "",
-        passWord: ""
+        userName: '',
+        passWord: ''
       },
       loginRules: {
         userName: [
-          { required: true, message: "帐号不能为空", trigger: "blur" }
+          { required: true, message: '帐号不能为空', trigger: 'blur' }
         ],
         passWord: [
-          { required: true, message: "密码不能为空", trigger: "blur" }
+          { required: true, message: '密码不能为空', trigger: 'blur' }
         ]
       }
     }
   },
   methods: {
     // 登录
-    loginForm() {
+    login () {
       // 表单预验证
       this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
-          // 登录
-          login(this.loginForm).then(res => {
-            console.log(res);
+          request({
+            url: 'login/userlogin',
+            method: 'post',
+            data: JSON.stringify(this.loginForm)
+          }).then(res => {
+            const result = res.data
+            if (result.code !== 0) {
+              return this.$message.error(result.msg)
+            }
+            this.$message.success(result.msg)
+            // this.$message.success("登录成功");
+            // 1.登录成功后将后台返回的token,保存到sessionStorage中
+            //  1.1 项目中除了登录之外的api接口，其他接口都需要在登录后才能访问
+            //  1.2 token只应当在当前网站打开期间生效，所以讲token保存在sessionStorage中
+            window.sessionStorage.setItem('token', result.data.token)
+            // 2. 通过编程式导航跳转到后台主页
+            this.$router.push('/home')
           })
         }
       })
     },
     // 重置账号密码
-    reset(loginForm) {
-      this.$refs.loginFormRef.resetFields();
+    reset (loginForm) {
+      this.$refs.loginFormRef.resetFields()
     }
   }
 }
