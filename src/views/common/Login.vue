@@ -46,7 +46,7 @@
 import { request } from '@/utils/httpRequest'
 
 export default {
-  data () {
+  data() {
     return {
       // 登录表单数据绑定对象
       loginForm: {
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     // 登录
-    login () {
+    login() {
       // 表单预验证
       this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
