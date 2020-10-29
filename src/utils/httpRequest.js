@@ -11,6 +11,8 @@ export function request (config) {
 
   // 请求拦截
   http.interceptors.request.use(config => {
+    // 为请求头对象，添加token
+    config.headers.Authorization = window.sessionStorage.getItem('token')
     return config
   }, error => {
   })

@@ -19,17 +19,17 @@
           text-color="#fff"
           active-text-color="#ffd04b">
           <!-- 一级菜单 -->
-          <el-submenu index="1">
+          <el-submenu :index="item.id" v-for="item in menuList" :key="item.id">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <span>{{item.name}}</span>
             </template>
             <!-- 二级菜单 -->
             <el-menu-item-group>
-              <el-menu-item index="1-1">
+              <el-menu-item :index="subItem.id" v-for="subItem in item.children" :key="subItem.id">
                 <template slot="title">
                   <i class="el-icon-location"></i>
-                  <span>导航一</span>
+                  <span>{{subItem.name}}</span>
                 </template>
               </el-menu-item>
             </el-menu-item-group>
@@ -42,25 +42,46 @@
 </template>
 
 <script>
+  import { request } from '../../utils/httpRequest'
+
   export default {
+    created() {
+      this.getMenuList()
+    },
     data () {
       return {
-        isCollapse: true
+        isCollapse: true,
+        menuList: []
       }
     },
     methods: {
-      logOut () {
+      logOut() {
         // 清空session
         window.sessionStorage.clear()
         // 重定向到登录界面
         this.$router.push('/login')
       },
-      handleOpen (key, keyPath) {
+      handleOpen(key, keyPath) {
         console.log(key, keyPath)
       },
-      handleClose (key, keyPath) {
+      handleClose(key, keyPath) {
         console.log(key, keyPath)
-      }
+      },
+      // 获取所有菜单
+      getMenuList() {
+        request({
+          url: 'menu/getMenuList',
+          method: 'get'
+        }).then(({ data }) => {
+          if (data.code !== 200) {
+            this.$message.error(data.msg)
+            // 跳转到登录界面
+            this.$router.push('/login')
+          }
+          this.menuList = data.data
+          console.log(this.dataList)
+        })
+      },
     }
   }
 </script>
