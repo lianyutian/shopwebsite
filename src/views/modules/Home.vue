@@ -9,7 +9,9 @@
       <el-button type="info" @click="logOut">退出</el-button>
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <!-- 侧边栏 -->
+      <el-aside :width="collapse ? '64px' : '200px'">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
@@ -17,7 +19,13 @@
           @close="handleClose"
           background-color="#545c64"
           text-color="#fff"
-          active-text-color="#ffd04b">
+          active-text-color="#409fff"
+          :unique-opened="true"
+          :collapse="collapse"
+          :collapse-transition="false"
+          :router="true"
+          :default-active="$route.path"
+        >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id" v-for="item in menuList" :key="item.id">
             <template slot="title">
@@ -26,9 +34,9 @@
             </template>
             <!-- 二级菜单 -->
             <el-menu-item-group>
-              <el-menu-item :index="subItem.id" v-for="subItem in item.children" :key="subItem.id">
+              <el-menu-item :index="subItem.url" v-for="subItem in item.children" :key="subItem.id">
                 <template slot="title">
-                  <i class="el-icon-location"></i>
+                  <i class="el-icon-menu"></i>
                   <span>{{subItem.name}}</span>
                 </template>
               </el-menu-item>
@@ -36,7 +44,10 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>Main</el-main>
+      <el-main>
+        <!-- 路由占位符 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -51,7 +62,8 @@
     data () {
       return {
         isCollapse: true,
-        menuList: []
+        menuList: [],
+        collapse: false
       }
     },
     methods: {
@@ -66,6 +78,9 @@
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath)
+      },
+      toggleCollapse() {
+        this.collapse = !this.collapse
       },
       // 获取所有菜单
       getMenuList() {
@@ -112,11 +127,22 @@
   }
 
   .el-main {
-    background-color: #969896;
+    background-color: #ffffff;
   }
 
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
   }
+
+  .toggle-button {
+    background-color: #4a5064;
+    font-size: 10px;
+    line-height: 24px;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+  }
+
 </style>
