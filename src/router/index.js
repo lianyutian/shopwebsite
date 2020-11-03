@@ -4,6 +4,7 @@ import Login from '@/views/common/Login'
 import Home from '@/views/modules/Home'
 import Welcome from '@/views/modules/Welcome'
 import Menu from '@/views/modules/group/Menu'
+import AddPermission from '@/views/modules/group/AddPermission'
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,10 @@ const routes = [
       {
         path: '/index/menus',
         component: Menu
+      },
+      {
+        path: '/index/addPermission',
+        component: AddPermission
       }
     ]
   }
