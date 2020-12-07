@@ -4,7 +4,7 @@ import Login from '@/views/common/Login'
 import Home from '@/views/modules/Home'
 import Welcome from '@/views/modules/Welcome'
 import Menu from '@/views/modules/group/Menu'
-import AddPermission from '@/views/modules/group/AddPermission'
+import Role from '@/views/modules/group/Role'
 
 Vue.use(VueRouter)
 
@@ -32,9 +32,9 @@ const routes = [
         component: Menu
       },
       {
-        path: '/index/addPermission',
-        component: AddPermission
-      }
+        path: '/index/roles',
+        component: Role
+      },
     ]
   }
 ]
