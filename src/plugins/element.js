@@ -9,7 +9,7 @@ import {
   Container, Header, Aside, Main, Menu, Submenu,
   MenuItemGroup, MenuItem, Breadcrumb, BreadcrumbItem,
   Table, TableColumn, Dialog, RadioGroup, RadioButton,
-  Switch, Pagination
+  Switch, Pagination, DatePicker, Select, Option
 } from 'element-ui'
 
 Vue.use(Button)
@@ -33,6 +33,9 @@ Vue.use(RadioGroup)
 Vue.use(RadioButton)
 Vue.use(Switch)
 Vue.use(Pagination)
+Vue.use(DatePicker)
+Vue.use(Select)
+Vue.use(Option)
 
 
 Vue.prototype.$message = Message

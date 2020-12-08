@@ -6,7 +6,48 @@
       <el-breadcrumb-item>角色管理</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <el-button type="primary" icon="el-icon-circle-plus-outline" plain @click="open">新添角色</el-button>
+    <!-- 角色搜索 -->
+    <div>
+      <el-form
+        ref="searchFormRef"
+        :model="searchForm"
+        inline="true"
+        size="mini">
+        <el-form-item prop="roleId">
+          <el-input v-model="searchForm.roleId" placeholder="请输入角色ID"></el-input>
+        </el-form-item>
+        <el-form-item prop="roleName">
+          <el-input v-model="searchForm.roleName" placeholder="请输入角色名称"></el-input>
+        </el-form-item>
+        <el-form-item prop="createTime">
+          <el-date-picker
+            style="width: 150px;"
+            v-model="searchForm.createTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="创建日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item prop="status">
+          <el-select v-model="searchForm.status" placeholder="状态" style="width: 70px">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="btns">
+          <el-button type="primary" icon="el-icon-search" @click="searchRoles">搜索</el-button>
+          <el-button type="primary" icon="el-icon-refresh-left" @click="reset">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div>
+      <el-button type="primary" icon="el-icon-circle-plus-outline" @click="open" size="mini">新添角色</el-button>
+    </div>
+
 
     <el-table
       :data="form"
@@ -66,7 +107,7 @@
       </el-table-column>
     </el-table>
     <!-- 新增角色 -->
-    <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="visible" width="500px" title="添加权限菜单">
+    <el-dialog append-to-body :close-on-click-modal="false" :visible.sync="visible" width="500px" title="新增角色">
       <el-form ref="roleForm" :inline="true" :model="roleForm" :rules="rules">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="roleForm.name" placeholder="请输入角色名称" style="width: 450px;"/>
@@ -78,9 +119,9 @@
             inactive-color="#ff4949">
           </el-switch>
         </el-form-item>
-        <el-form-item label="选择角色权限" prop="id">
+        <el-form-item label="选择角色权限" prop="permissionList">
           <tree-select
-            v-model="roleForm.id"
+            v-model="roleForm.permissions"
             :options="menus"
             :load-options="loadMenus"
             style="width: 450px;"
@@ -94,8 +135,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button>取消</el-button>
-        <el-button @click="addRole">确认</el-button>
+        <el-button @click="visible = false">取消</el-button>
+        <el-button type="primary" @click="addRole">确认</el-button>
       </div>
     </el-dialog>
 
@@ -135,6 +176,9 @@
         roleForm: {
           status: true
         },
+        searchForm: {
+          status: null
+        },
         page: {
           pageNum: 0,
           pageSize: 10
@@ -153,6 +197,13 @@
           id: 0,
           label: '权限目录',
           children: null,
+        }],
+        options: [{
+          value: true,
+          label: '启用'
+        }, {
+          value: false,
+          label: '禁用'
         }],
       }
     },
@@ -184,8 +235,35 @@
         }
       },
       addRole () {
-        console.log(JSON.stringify(this.roleForm))
-        console.log(this.roleForm)
+        request({
+          url: '/role/addRole',
+          method: 'POST',
+          data: JSON.stringify(this.roleForm)
+        }).then(({ data: res }) => {
+          data: console.log(JSON.stringify(this.roleForm))
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.visible = false
+          this.getRoleList()
+        })
+      },
+      searchRoles () {
+        request({
+          url: '/role/getRoleList',
+          method: 'POST',
+          data: JSON.stringify(this.searchForm)
+        }).then(({ data: res }) => {
+          if (res.code !== 200) {
+            return this.$message.error(res.msg)
+          }
+          this.form = res.data.dataList
+        })
+        console.log(JSON.stringify())
+      },
+      // 重置账号密码
+      reset () {
+        this.$refs.searchFormRef.resetFields()
       },
       open () {
         this.visible = true
